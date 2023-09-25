@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{component/config :: config}"></th:block>
+</head>
+<body>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>이메일</th>
+      <th>이름</th>
+      <th>생년월일</th>
+      <th>핸드폰번호</th>
+    </tr>
+    <tr>
+      <td th:text="${member.id}"></td>
+      <td th:text="${member.memberEmail}"></td>
+      <td th:text="${member.memberName}"></td>
+      <td th:text="${member.memberBirth}"></td>
+      <td th:text="${member.memberMobile}"></td>
+      <td>
+        <button class="btn btn-primary" th:onclick="update_fn([[${member.id}]])">수정</button>
+      </td>
+      <td>
+        <button class="btn btn-danger" th:onclick="pass_check()" >삭제</button>
+      </td>
+      <td style="display: none;" id="pw">
+        <input type="password" placeholder="비밀번호를 입력해주세요." name="memberPassword" >
+        <button class="btn btn-danger" th:onclick="delete_fn([[${member.id}]], [[${member.memberEmail}]])">삭제</button>
+      </td>
+    </tr>
+  </table>
+  <div th:replace="~{component/footer :: footer}"></div>
+</body>
+<script th:inline="javascript">
+  const update_fn = (id) => {
+    location.href=`/member/update/${id}`;
+  }
+
+  const pass_check = () => {
+    const pw = document.getElementById("pw");
+    pw.style.display="block";
+  }
+
+  const delete_fn = (id, memberEmail) => {
+    const memberPassword = document.querySelector("input[name='memberPassword']").value;
+    $.ajax({
+      type:"delete",
+      data:{id, memberEmail, memberPassword},
+      url:`/member/`,
+      success:function(){
+        alert("삭제완료!")
+        location.href="/member/members"
+      }, error:function(){
+        alert("비밀번호가 일치하지않습니다.")
+      }
+    })
+  }
+</script>
+</html>

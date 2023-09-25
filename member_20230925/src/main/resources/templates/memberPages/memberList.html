@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{component/config :: config}"></th:block>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>이메일</th>
+            <th>이름</th>
+            <th>생년월일</th>
+            <th>핸드폰번호</th>
+        </tr>
+        <tr th:each="member: ${memberList}">
+            <td>
+                <a th:href="@{|/member/${member.id}|}" th:text="${member.id}"></a>
+            </td>
+            <td th:text="${member.memberEmail}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.memberBirth}"></td>
+            <td th:text="${member.memberMobile}"></td>
+        </tr>
+    </table>
+    <div th:replace="~{component/footer :: footer}"></div>
+</body>
+</html>

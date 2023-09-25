@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{component/config :: config}"></th:block>
+</head>
+<body>
+<form action="/member/login" method="post">
+    <input type="text" name="memberEmail" placeholder="계정입력"><br>
+    <input type="password" name="memberPassword" placeholder="비번입력"><br>
+    <input type="submit" value="로그인">
+</form>
+<div th:replace="~{component/footer :: footer}"></div>
+</body>
+</html>

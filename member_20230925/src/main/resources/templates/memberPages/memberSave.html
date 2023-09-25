@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{component/config :: config}"></th:block>
+</head>
+<body>
+    <div th:replace="~{component/header :: header}"></div>
+    <form action="/member/save" method="post">
+        <input type="text" name="memberEmail" placeholder="계정입력" onblur="email_check()"><br>
+        <p id="pcheck" style="display: none;"></p>
+        <input type="password" name="memberPassword" placeholder="비번입력"><br>
+        <input type="text" name="memberName" placeholder="이름입력"><br>
+        <input type="date" name="memberBirth" placeholder="생일입력"><br>
+        <input type="text" name="memberMobile" placeholder="번호입력"><br>
+        <input type="submit" value="등록">
+    </form>
+    <div th:replace="~{component/footer :: footer}"></div>
+</body>
+<script th:inline="javascript">
+    const email_check = () => {
+        const memberEmail = document.querySelector("input[name='memberEmail']").value;
+        const pcheck = document.getElementById("pcheck");
+        if(memberEmail.length > 0){
+        $.ajax({
+            type:"post",
+            url:"/member/dup-check",
+            data:{memberEmail},
+            success:function(){
+                    pcheck.style.display = "block";
+                    pcheck.style.color="red";
+                    pcheck.innerText="중복된이메일입니다.";
+            }, error:function(){
+                    pcheck.style.display = "block";
+                    pcheck.style.color="blue";
+                    pcheck.innerText="사용가능이메일입니다.";
+            }
+        })
+        }else{
+            pcheck.style.display = "none";
+        }
+    }
+</script>
+</html>
