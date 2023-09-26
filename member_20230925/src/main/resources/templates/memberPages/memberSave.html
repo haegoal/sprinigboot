@@ -4,6 +4,8 @@
     <th:block th:replace="~{component/config :: config}"></th:block>
 </head>
 <body>
+<div th:replace="~{component/header :: header}"></div>
+<div th:replace="~{component/nav :: nav}"></div>
     <div th:replace="~{component/header :: header}"></div>
     <form action="/member/save" method="post">
         <input type="text" name="memberEmail" placeholder="계정입력" onblur="email_check()"><br>
@@ -21,20 +23,40 @@
         const memberEmail = document.querySelector("input[name='memberEmail']").value;
         const pcheck = document.getElementById("pcheck");
         if(memberEmail.length > 0){
-        $.ajax({
-            type:"post",
-            url:"/member/dup-check",
-            data:{memberEmail},
-            success:function(){
-                    pcheck.style.display = "block";
-                    pcheck.style.color="red";
-                    pcheck.innerText="중복된이메일입니다.";
-            }, error:function(){
-                    pcheck.style.display = "block";
-                    pcheck.style.color="blue";
-                    pcheck.innerText="사용가능이메일입니다.";
-            }
-        })
+            axios({
+                method:"post",
+                url:"/member/dup-check",
+                data:{
+                    memberEmail
+                },
+
+            }).then(res => {
+                console.log(res)
+                pcheck.style.display = "block";
+                pcheck.style.color="blue";
+                pcheck.innerText=res.data;
+                //요청 성공 후 서버에서 200 응답
+            }).catch(err => {
+                console.log(err)
+                pcheck.style.display = "block";
+                pcheck.style.color="red";
+                pcheck.innerText=err.response.data;
+                // 요청 실패 또는 서버에서 4xx, 5xx 응답
+            });
+        // $.ajax({
+        //     type:"post",
+        //     url:"/member/dup-check",
+        //     data:{memberEmail},
+        //     success:function(){
+        //             pcheck.style.display = "block";
+        //             pcheck.style.color="red";
+        //             pcheck.innerText="중복된이메일입니다.";
+        //     }, error:function(){
+        //             pcheck.style.display = "block";
+        //             pcheck.style.color="blue";
+        //             pcheck.innerText="사용가능이메일입니다.";
+        //     }
+        // });
         }else{
             pcheck.style.display = "none";
         }

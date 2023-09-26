@@ -32,7 +32,14 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login(@RequestParam(value = "redirectURI", defaultValue = "/member/mypage") String redirectURI, Model model){
+        model.addAttribute("redirectURI", redirectURI);
+        return "/memberPages/memberLogin";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute("loginEmail");
         return "/memberPages/memberLogin";
     }
 
@@ -66,13 +73,14 @@ public class MemberController {
     }
 
     @PutMapping("/")
-    public ResponseEntity update(@ModelAttribute MemberDTO memberDTO){
+    public ResponseEntity update(@RequestBody MemberDTO memberDTO){
+        System.out.println("memberDTO = " + memberDTO);
         boolean loginResult = memberService.login(memberDTO);
-        if(loginResult){
+        try{
             memberService.update(memberDTO);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("수정완료", HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>( HttpStatus.CONFLICT);
         }
     }
 
@@ -89,24 +97,38 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
+    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session, @RequestParam("redirectURI") String redirectURI){
         boolean loginResult = memberService.login(memberDTO);
         if(loginResult){
             session.setAttribute("loginEmail", memberDTO.getMemberEmail());
-            return "/memberPages/memberMain";
+//            return "/memberPages/memberMain";
+            return "redirect:" + redirectURI;
         }else{
             return "/memberPages/memberLogin";
         }
     }
 
+    @GetMapping("/mypage")
+    public String myPage(){
+        return "memberPages/meberMain";
+    }
+
     @PostMapping("/dup-check")
-    public ResponseEntity login(@RequestParam("memberEmail") String memberEmail){
-        boolean result = memberService.findByEmail(memberEmail);
+    public ResponseEntity login(@RequestBody MemberDTO memberDTO){
+        boolean result = memberService.findByEmail(memberDTO.getMemberEmail());
         if(result){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("사용가능",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("사용불가능", HttpStatus.CONFLICT);
+        }
+    }
+    @GetMapping("/detail")
+    public ResponseEntity detail(@RequestParam("id") Long id){
+        MemberDTO memberDTO = memberService.findById(id);
+        if(memberDTO!=null){
+            return new ResponseEntity<>(memberDTO,HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 }

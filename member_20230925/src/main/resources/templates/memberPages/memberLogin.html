@@ -4,7 +4,10 @@
     <th:block th:replace="~{component/config :: config}"></th:block>
 </head>
 <body>
+<div th:replace="~{component/header :: header}"></div>
+<div th:replace="~{component/nav :: nav}"></div>
 <form action="/member/login" method="post">
+    <input type="hidden" name="redirectURI" th:value="${redirectURI}">
     <input type="text" name="memberEmail" placeholder="계정입력"><br>
     <input type="password" name="memberPassword" placeholder="비번입력"><br>
     <input type="submit" value="로그인">

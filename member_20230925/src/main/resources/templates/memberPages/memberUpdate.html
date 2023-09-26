@@ -4,7 +4,8 @@
     <th:block th:replace="~{component/config :: config}"></th:block>
 </head>
 <body>
-<form>
+<div th:replace="~{component/header :: header}"></div>
+<div th:replace="~{component/nav :: nav}"></div>
     <input type="hidden" th:value="${member.id}" name="id"><br>
     <input type="text" th:value="${member.memberEmail}" name="memberEmail" placeholder="계정입력" readonly><br>
     <input type="password" name="memberPassword" placeholder="비번입력"><br>
@@ -12,31 +13,30 @@
     <input type="date" th:value="${member.memberBirth}" name="memberBirth" placeholder="생일입력"><br>
     <input type="text" th:value="${member.memberMobile}" name="memberMobile" placeholder="번호입력"><br>
     <input type="submit" value="수정" th:onclick="update_fn()">
-</form>
 <div th:replace="~{component/footer :: footer}"></div>
 </body>
 <script th:inline="javascript">
 
-    const update_fn = (e) => {
-        e.preventDefault();
+    const update_fn = () => {
         const id = document.querySelector("input[name='id']").value;
         const memberEmail = document.querySelector("input[name='memberEmail']").value;
         const memberPassword = document.querySelector("input[name='memberPassword']").value;
         const memberName = document.querySelector("input[name='memberName']").value;
         const memberBirth = document.querySelector("input[name='memberBirth']").value;
         const memberMobile = document.querySelector("input[name='memberMobile']").value;
-        $.ajax({
-            type:"put",
+        axios({
+            method:"put",
             url:"/member/",
             data:{
                 id, memberEmail, memberPassword, memberName, memberBirth, memberMobile
             },
-            success:function(){
-                location.href=`/member/${id}`
-            }, error:function (){
-                alert("아이디 또는 비밀번호가 틀렸습니다.")
-            }
-        })
+        }).then(res => {
+            console.log(res)
+            alert(res.data);
+            location.href=`/member/${id}`;
+        }).catch(err =>{
+            alert("아이디또는 비번이 틀렸습니다.")
+        });
     }
 </script>
 </html>

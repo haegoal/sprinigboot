@@ -4,6 +4,8 @@
     <th:block th:replace="~{component/config :: config}"></th:block>
 </head>
 <body>
+<div th:replace="~{component/header :: header}"></div>
+<div th:replace="~{component/nav :: nav}"></div>
     <table>
         <tr>
             <th>ID</th>
@@ -20,8 +22,47 @@
             <td th:text="${member.memberName}"></td>
             <td th:text="${member.memberBirth}"></td>
             <td th:text="${member.memberMobile}"></td>
+            <td>
+                <button th:onclick="detail_fn([[${member.id}]])">조회</button>
+            </td>
         </tr>
     </table>
+    <div id="detail">
+
+    </div>
     <div th:replace="~{component/footer :: footer}"></div>
 </body>
+<script th:inline="javascript">
+
+    const detail_fn = (id) => {
+        const detail = document.getElementById("detail")
+      axios({
+          method:"get",
+          url:"/member/detail",
+          params :{
+                id
+          },
+          type:"json",
+      }).then(res =>{
+          let result = "<table class=\"table table-striped\">\n" +
+              "    <tr>\n" +
+              "      <th>id</th>\n" +
+              "      <td>" + res.data.id + "</td>\n" +
+              "    </tr>\n" +
+              "    <tr>\n" +
+              "      <th>email</th>\n" +
+              "      <td>" + res.data.memberEmail + "</td>\n" +
+              "    </tr>\n" +
+              "    <tr>\n" +
+              "      <th>name</th>\n" +
+              "      <td>" + res.data.memberName + "</td>\n" +
+              "    </tr>\n" +
+              "  </table>";
+          detail.innerHTML = result;
+      }).catch(err => {
+          detail.style.display="block";
+          detail.innerHTML = err;
+      })
+    }
+</script>
 </html>
