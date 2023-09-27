@@ -7,7 +7,6 @@
 <div th:replace="~{component/header :: header}"></div>
 <div th:replace="~{component/nav :: nav}"></div>
     <div th:replace="~{component/header :: header}"></div>
-    <form action="/member/save" method="post">
         <input type="text" name="memberEmail" placeholder="계정입력" onblur="email_check()"><br>
         <p id="pcheck" style="display: none;"></p>
         <input type="password" name="memberPassword" placeholder="비번입력"><br>
@@ -19,6 +18,8 @@
     <div th:replace="~{component/footer :: footer}"></div>
 </body>
 <script th:inline="javascript">
+
+
     const email_check = () => {
         const memberEmail = document.querySelector("input[name='memberEmail']").value;
         const pcheck = document.getElementById("pcheck");
